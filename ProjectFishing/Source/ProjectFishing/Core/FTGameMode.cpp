@@ -2,6 +2,7 @@
 
 
 #include "Core/FTGameMode.h"
+#include "Core/FTPlayerController.h"
 
 AFTGameMode::AFTGameMode()
 {
@@ -11,4 +12,6 @@ AFTGameMode::AFTGameMode()
 	{
 		DefaultPawnClass = PlayerReference.Class;
 	}
+
+	PlayerControllerClass = AFTPlayerController::StaticClass();
 }
