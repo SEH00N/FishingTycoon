@@ -8,10 +8,14 @@
 #include "Camera/CameraComponent.h"
 #include "Core/FTPlayerController.h"
 #include <Kismet/GameplayStatics.h>
+#include <Core/FTCollision.h>
+#include <Interface/FTInteractable.h>
 
 // Sets default values
 AFTPlayer::AFTPlayer()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Pawn
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -37,6 +41,21 @@ void AFTPlayer::BeginPlay()
 	}
 }
 
+void AFTPlayer::Tick(float deltaTime)
+{
+	FindInteractable();
+}
+
+void AFTPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFTPlayer::Move);
+}
+
 void AFTPlayer::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -52,13 +71,22 @@ void AFTPlayer::Move(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Log, TEXT("Quater Move"));
 }
 
-void AFTPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AFTPlayer::FindInteractable()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	const FVector Position = GetActorLocation();
+	TArray<FOverlapResult> OverlapResults;
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFTPlayer::Move);
+	bool bFound = GetWorld()->OverlapMultiByChannel(OverlapResults, Position, FQuat::Identity, CCHANNEL_FTINTERACTABLE, FCollisionShape::MakeSphere(InteractRadius));
+
+	if (bFound)
+	{
+		IFTInteractable* interactable = Cast<IFTInteractable>(OverlapResults[0].GetActor());
+		if (interactable)
+			interactable->OnInteract(this);
+	}
+
+#if ENABLE_DRAW_DEBUG
+	FColor DrawColor = bFound ? FColor::Green : FColor::Red;
+	DrawDebugSphere(GetWorld(), Position, InteractRadius, 8, DrawColor);
+#endif
 }
-

@@ -17,10 +17,18 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float deltaTime) override;
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Move(const FInputActionValue& Value);
+
+protected:
+	void FindInteractable();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
+	float InteractRadius = 10;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
@@ -31,6 +39,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<class UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> InteractAction;
 
 //protected:
 //	UPROPERTY(Transient)
