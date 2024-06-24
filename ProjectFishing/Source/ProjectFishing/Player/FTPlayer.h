@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
 	float InteractRadius = 10;
 
-	class IFTInteractable* FocusedInteractable;
+	class IFTInteractable* FocusedInteractable = nullptr;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)

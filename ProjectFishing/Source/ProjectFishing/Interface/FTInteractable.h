@@ -20,7 +20,7 @@ class PROJECTFISHING_API IFTInteractable
 	GENERATED_BODY()
 
 public:
-	virtual void OnInteract(AActor* performer) abstract;
-	virtual void OnFocusBegin(AActor* performer) abstract;
-	virtual void OnFocusEnd(AActor* performer) abstract;
+	virtual void OnInteract(AActor* Performer) abstract;
+	virtual void OnFocusBegin(AActor* Performer) abstract;
+	virtual void OnFocusEnd(AActor* Performer) abstract;
 };

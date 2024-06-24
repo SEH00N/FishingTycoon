@@ -21,4 +21,7 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<class UFTInteractPanel> InteractPanel;
+
+public:
+	class UFTInteractPanel* GetInteractPanel() { return InteractPanel; }
 };

@@ -15,7 +15,7 @@ class PROJECTFISHING_API AFTPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 protected:
-	void virtual BeginPlay() override;
+	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD)
@@ -23,4 +23,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class UFTHUD> FTHUD;
+
+public:
+	class UFTHUD* GetFTHUD() { return FTHUD; }
 };

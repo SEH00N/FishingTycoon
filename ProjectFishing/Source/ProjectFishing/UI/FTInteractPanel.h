@@ -23,9 +23,10 @@ protected:
 	TObjectPtr<class UTextBlock> Text;
 
 public:
-	void Init(FVector2D& Position, FString& Tooltip);
-	void Display(class IInteractable* Performer, bool Active);
+	void Init(FString& Tooltip);
+	void SetPosition(FVector2D& Position);
+	void Display(class IFTInteractable* Performer, bool Active);
 
 protected:
-	class IInteractable* CurrentInteractable;
+	class IFTInteractable* CurrentInteractable;
 };

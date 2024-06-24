@@ -3,6 +3,8 @@
 
 #include "UI/FTInteractPanel.h"
 #include "Components/TextBlock.h"
+#include "Components/PanelSlot.h"
+#include <Components/CanvasPanelSlot.h>
 
 UFTInteractPanel::UFTInteractPanel(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -10,21 +12,27 @@ UFTInteractPanel::UFTInteractPanel(const FObjectInitializer& ObjectInitializer) 
 
 void UFTInteractPanel::NativeConstruct()
 {
-	Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("Text")));
+	Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("ContentText")));
 	Display(nullptr, false);
 }
 
-void UFTInteractPanel::Init(FVector2D& Position, FString& Tooltip)
+void UFTInteractPanel::Init(FString& Tooltip)
 {
-	SetPositionInViewport(Position);
 	Text->SetText(FText::FromString(TEXT("[ F ] : " + Tooltip)));
 }
 
-void UFTInteractPanel::Display(IInteractable* Performer, bool Active)
+void UFTInteractPanel::SetPosition(FVector2D& Position)
+{
+	// ¿Ö ¾È µÊ??
+	SetPositionInViewport(Position);
+}
+
+void UFTInteractPanel::Display(IFTInteractable* Performer, bool Active)
 {
 	if (Active)
 	{
 		SetVisibility(ESlateVisibility::Visible);
+		CurrentInteractable = Performer;
 	}
 	else
 	{
