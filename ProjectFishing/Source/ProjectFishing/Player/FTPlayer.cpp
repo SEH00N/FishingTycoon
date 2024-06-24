@@ -43,6 +43,8 @@ void AFTPlayer::BeginPlay()
 
 void AFTPlayer::Tick(float deltaTime)
 {
+	Super::Tick(deltaTime);
+
 	FindInteractable();
 }
 
@@ -68,25 +70,34 @@ void AFTPlayer::Move(const FInputActionValue& Value)
 
 	//GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 
-	UE_LOG(LogTemp, Log, TEXT("Quater Move"));
+	//UE_LOG(LogTemp, Log, TEXT("Quater Move"));
 }
 
 void AFTPlayer::FindInteractable()
 {
 	const FVector Position = GetActorLocation();
 	TArray<FOverlapResult> OverlapResults;
+	IFTInteractable* interactable = nullptr;
 
-	bool bFound = GetWorld()->OverlapMultiByChannel(OverlapResults, Position, FQuat::Identity, CCHANNEL_FTINTERACTABLE, FCollisionShape::MakeSphere(InteractRadius));
+	bool bFound = GetWorld()->OverlapMultiByChannel(OverlapResults, Position, FQuat::Identity, CCHANNEL_FTINTERACT, FCollisionShape::MakeSphere(InteractRadius));
 
 	if (bFound)
-	{
-		IFTInteractable* interactable = Cast<IFTInteractable>(OverlapResults[0].GetActor());
-		if (interactable)
-			interactable->OnInteract(this);
-	}
+		interactable = Cast<IFTInteractable>(OverlapResults[0].GetActor());
+
+	if (interactable != FocusedInteractable)
+		FocusInteractable(interactable);
 
 #if ENABLE_DRAW_DEBUG
 	FColor DrawColor = bFound ? FColor::Green : FColor::Red;
 	DrawDebugSphere(GetWorld(), Position, InteractRadius, 8, DrawColor);
 #endif
+}
+
+void AFTPlayer::FocusInteractable(IFTInteractable* newInteractable)
+{
+	if (FocusedInteractable)
+		FocusedInteractable->OnFocusEnd(this);
+	FocusedInteractable = newInteractable;
+	if (FocusedInteractable)
+		FocusedInteractable->OnFocusBegin(this);
 }

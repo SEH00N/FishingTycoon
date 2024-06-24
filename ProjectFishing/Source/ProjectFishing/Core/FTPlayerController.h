@@ -18,9 +18,9 @@ protected:
 	void virtual BeginPlay() override;
 
 protected:
-	UPROPERTY()
-	AActor* CameraActor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HUD)
+	TSubclassOf<class UFTHUD> FTHUDWidgetClass;
 
-public:
-	AActor* GetCameraActor() { return CameraActor; }
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
+	TObjectPtr<class UFTHUD> FTHUD;
 };

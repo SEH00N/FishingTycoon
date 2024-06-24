@@ -25,10 +25,13 @@ protected:
 
 protected:
 	void FindInteractable();
+	void FocusInteractable(class IFTInteractable* newInteractable);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
 	float InteractRadius = 10;
+
+	class IFTInteractable* FocusedInteractable;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)

@@ -21,4 +21,6 @@ class PROJECTFISHING_API IFTInteractable
 
 public:
 	virtual void OnInteract(AActor* performer) abstract;
+	virtual void OnFocusBegin(AActor* performer) abstract;
+	virtual void OnFocusEnd(AActor* performer) abstract;
 };
