@@ -11,6 +11,4 @@ UFTHUD::UFTHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitia
 void UFTHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	InteractPanel = Cast<UFTInteractPanel>(GetWidgetFromName(TEXT("WBP_InteractPanel")));
 }

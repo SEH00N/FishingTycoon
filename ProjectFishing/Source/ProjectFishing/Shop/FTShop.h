@@ -15,22 +15,14 @@ class PROJECTFISHING_API AFTShop : public AActor, public IFTInteractable
 public:	
 	AFTShop();
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	class AFTPlayerController* PlayerController;
-	class UFTInteractPanel* InteractPanel;
-	class AActor* CurrentPerformer;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString Tooltip = FString(TEXT("SHOP"));
-
-protected:
-	bool bIsFocused = false;
-	void SetPanelPosition();
 
 public:	
 	void OnInteract(AActor* Performer) override;
 	void OnFocusBegin(AActor* Performer) override;
 	void OnFocusEnd(AActor* Performer) override;
+	FString& GetTooltip() override { return Tooltip; }
 };

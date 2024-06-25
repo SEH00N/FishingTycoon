@@ -3,19 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/FTUserWidget.h"
 #include "FTInteractPanel.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTFISHING_API UFTInteractPanel : public UUserWidget
+class PROJECTFISHING_API UFTInteractPanel : public UFTUserWidget
 {
 	GENERATED_BODY()
 	
 public:
-	UFTInteractPanel(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 
 protected:
@@ -24,9 +23,5 @@ protected:
 
 public:
 	void Init(FString& Tooltip);
-	void SetPosition(FVector2D& Position);
-	void Display(class IFTInteractable* Performer, bool Active);
-
-protected:
-	class IFTInteractable* CurrentInteractable;
+	void Display(bool Active);
 };

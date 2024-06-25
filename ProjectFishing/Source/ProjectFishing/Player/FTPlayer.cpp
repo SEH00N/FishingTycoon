@@ -10,6 +10,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <Core/FTCollision.h>
 #include <Interface/FTInteractable.h>
+#include "UI/FTWidgetComponent.h"
+#include "UI/FTInteractPanel.h"
 
 // Sets default values
 AFTPlayer::AFTPlayer()
@@ -23,8 +25,18 @@ AFTPlayer::AFTPlayer()
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Game/FishingTycoon/Characters/Woowakgood.Woowakgood"));
 	if (CharacterMeshRef.Object)
-	{
 		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
+
+	InteractPanelComponent = CreateDefaultSubobject<UFTWidgetComponent>(TEXT("InteractPanel"));
+	InteractPanelComponent->SetupAttachment(GetMesh());
+	InteractPanelComponent->SetRelativeLocation(FVector(0.0f, 0.0f, -550.0f));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> InteractPanelRef(TEXT("/Game/FishingTycoon/UI/WBP_InteractPanel.WBP_InteractPanel_C"));
+	if (InteractPanelRef.Class)
+	{
+		InteractPanelComponent->SetWidgetClass(InteractPanelRef.Class);
+		InteractPanelComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		InteractPanelComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
@@ -56,6 +68,7 @@ void AFTPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFTPlayer::Move);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AFTPlayer::Interact);
 }
 
 void AFTPlayer::Move(const FInputActionValue& Value)
@@ -66,11 +79,14 @@ void AFTPlayer::Move(const FInputActionValue& Value)
 	FVector MoveDirection = FVector(MovementVector.X, MovementVector.Y, 0.0f);
 	FRotator Rotator = FRotator(0, -90, 0);
 	AddMovementInput(Rotator.RotateVector(MoveDirection));
-	//AddMovementInput(MoveDirection);
+}
 
-	//GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+void AFTPlayer::Interact(const FInputActionValue& Value)
+{
+	if (FocusedInteractable == nullptr)
+		return;
 
-	//UE_LOG(LogTemp, Log, TEXT("Quater Move"));
+	FocusedInteractable->OnInteract(this);
 }
 
 void AFTPlayer::FindInteractable()
@@ -96,8 +112,20 @@ void AFTPlayer::FindInteractable()
 void AFTPlayer::FocusInteractable(IFTInteractable* newInteractable)
 {
 	if (FocusedInteractable)
+	{
 		FocusedInteractable->OnFocusEnd(this);
+		InteractPanel->Display(false);
+	}
 	FocusedInteractable = newInteractable;
 	if (FocusedInteractable)
+	{
 		FocusedInteractable->OnFocusBegin(this);
+		InteractPanel->Init(FocusedInteractable->GetTooltip());
+		InteractPanel->Display(true);
+	}
+}
+
+void AFTPlayer::InitWidget(UFTUserWidget* FTWidget)
+{
+	InteractPanel = Cast<UFTInteractPanel>(FTWidget);
 }

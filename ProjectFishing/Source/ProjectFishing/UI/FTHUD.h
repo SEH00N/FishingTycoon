@@ -17,11 +17,4 @@ class PROJECTFISHING_API UFTHUD : public UUserWidget
 public:
 	UFTHUD(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
-
-protected:
-	UPROPERTY()
-	TObjectPtr<class UFTInteractPanel> InteractPanel;
-
-public:
-	class UFTInteractPanel* GetInteractPanel() { return InteractPanel; }
 };

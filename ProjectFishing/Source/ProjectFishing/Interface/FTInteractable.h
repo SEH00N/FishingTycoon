@@ -23,4 +23,5 @@ public:
 	virtual void OnInteract(AActor* Performer) abstract;
 	virtual void OnFocusBegin(AActor* Performer) abstract;
 	virtual void OnFocusEnd(AActor* Performer) abstract;
+	virtual FString& GetTooltip() abstract;
 };
